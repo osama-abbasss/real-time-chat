@@ -4,7 +4,7 @@ from django.conf import settings
 User = settings.AUTH_USER_MODEL
 
 class Message(models.Model):
-    auther = models.ForeignKey(User, related_name='user_message', on_delete= models.CASCADE)
+    author = models.ForeignKey(User, related_name='user_message', on_delete= models.CASCADE)
     content = models.TextField()
     timestemp = models.DateTimeField(auto_now_add = True)
 
