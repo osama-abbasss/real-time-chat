@@ -8,8 +8,8 @@ class Message(models.Model):
     content = models.TextField()
     timestemp = models.DateTimeField(auto_now_add = True)
 
-    def __Str__(self):
-        return self.auther.username
+    def __str__(self):
+        return self.author.username
 
-    def last_15_message():
+    def last_15_messages():
         return Message.objects.order_by('-timestemp').all()[:15]

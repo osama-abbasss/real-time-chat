@@ -11,17 +11,18 @@ User = settings.AUTH_USER_MODEL
 class ChatConsumer(WebsocketConsumer):
 
     def fetch_messages(self, date):
-        messages = Message.last_15_message()
+        messages = Message.last_15_messages()
         content = {
-            'messages':self.messages_to_json(messages)
+            'command': 'messages',
+            'messages':self.messages_to_json(messages),
         }
         self.send_message(content)
 
 
     def new_message(self, date):
-        author = data['form']
+        author = data['from']
         author_user = User.objects.filter(username= author)[0]
-        message = Message.objects.creat(
+        message = Message.objects.create(
         author = author_user,
         content =data['message']
         )
@@ -39,7 +40,7 @@ class ChatConsumer(WebsocketConsumer):
 
     def message_to_json(self, message):
         context = {
-            'author': message.author,
+            'author': message.author.username,
             'content': message.content,
             'timestemp': str(message.timestemp)
         }
@@ -85,7 +86,7 @@ class ChatConsumer(WebsocketConsumer):
         )
 
     def send_message(self, message):
-        self.message(text_data=json.dumps(message))
+        self.send(text_data=json.dumps(message))
 
     # Receive message from room group
     def chat_message(self, event):
