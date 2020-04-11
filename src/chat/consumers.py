@@ -3,9 +3,11 @@ from channels.generic.websocket import WebsocketConsumer
 from .models import Message
 import json
 
-from django.conf import settings
+from django.contrib.auth.models import User
 
-User = settings.AUTH_USER_MODEL
+# from django.conf import settings
+#
+# User = settings.AUTH_USER_MODEL
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -19,13 +21,14 @@ class ChatConsumer(WebsocketConsumer):
         self.send_message(content)
 
 
-    def new_message(self, date):
+    def new_message(self, data):
         author = data['from']
         author_user = User.objects.filter(username= author)[0]
         message = Message.objects.create(
         author = author_user,
         content =data['message']
         )
+        print(data)
         content = {
         'command' : 'new_message',
         'message' : self.message_to_json(message)
