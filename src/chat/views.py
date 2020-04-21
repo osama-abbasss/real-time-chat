@@ -17,7 +17,3 @@ def room(request, room_name):
         }
 
     return render(request, template_name, context)
-
-def test(request):
-    template_name = 'chat/2.html'
-    return render(request, template_name)

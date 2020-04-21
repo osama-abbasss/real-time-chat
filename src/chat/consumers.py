@@ -12,20 +12,26 @@ from django.contrib.auth.models import User
 
 class ChatConsumer(WebsocketConsumer):
 
-    def fetch_messages(self, date):
-        messages = Message.last_15_messages()
+    def fetch_messages(self, data):
+        room_name = data['room_name']
+        try:
+            messages_qs = Message.objects.filter(room_name= room_name)
+        except:
+            pass
         content = {
             'command': 'messages',
-            'messages':self.messages_to_json(messages),
+            'messages':self.messages_to_json(messages_qs),
         }
         self.send_message(content)
 
 
     def new_message(self, data):
         author = data['from']
+        room_name = data['room_name']
         author_user = User.objects.filter(username= author)[0]
         message = Message.objects.create(
         author = author_user,
+        room_name = room_name,
         content =data['message']
         )
         content = {
@@ -43,6 +49,7 @@ class ChatConsumer(WebsocketConsumer):
     def message_to_json(self, message):
         context = {
             'author': message.author.username,
+            'room_name': message.room_name,
             'content': message.content,
             'timestemp': str(message.timestemp)
         }
